@@ -250,3 +250,54 @@ class CrmLead(models.Model):
         # Placeholder for future cold lead processing
         # Currently no additional actions are taken with cold leads
         return cold_leads
+
+    @api.model
+    def _detect_whatsapp_engagement(self, message):
+        """
+        Detect WhatsApp engagement from message and move lead to Email Re-engaged stage
+        
+        :param message: The mail.message record that was created
+        """
+        if not message or not message.body or not isinstance(message.body, str):
+            return False
+            
+        # Check if this is a WhatsApp message
+        if "WhatsApp Message:" in message.body:
+            _logger.info(f"WhatsApp engagement detected in message {message.id}")
+            
+            # Find the related lead
+            lead = False
+            if message.model == 'crm.lead' and message.res_id:
+                lead = self.browse(message.res_id)
+            
+            if not lead:
+                _logger.warning(f"Could not find lead for WhatsApp message {message.id}")
+                return False
+                
+            # Find Email Re-engaged stage
+            reengaged_stage = self.env['crm.stage'].search([('name', '=', 'Email Re-engaged')], limit=1)
+            if not reengaged_stage:
+                _logger.error("'Email Re-engaged' stage not found")
+                return False
+                
+            # Move to Email Re-engaged stage if the lead is in NC or Cold stage
+            nc_stage = self.env['crm.stage'].search([('name', '=', 'Not Connected (NC)')], limit=1)
+            cold_stage = self.env['crm.stage'].search([('name', '=', 'Cold Lead')], limit=1)
+            
+            if lead.stage_id.id in [nc_stage.id, cold_stage.id]:
+                _logger.info(f"Moving lead {lead.id} to Email Re-engaged stage due to WhatsApp engagement")
+                lead.write({
+                    'stage_id': reengaged_stage.id,
+                    'x_moved_to_cold': False  # Reset the moved to cold flag if it was set
+                })
+                
+                # Add an internal note about the stage change
+                lead.message_post(
+                    body=f"Lead automatically moved to 'Email Re-engaged' stage due to WhatsApp message.",
+                    message_type='notification',
+                    subtype_id=self.env.ref('mail.mt_note').id
+                )
+                
+                return True
+        
+        return False

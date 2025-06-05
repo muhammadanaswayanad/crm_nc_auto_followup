@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Create Email Re-engaged stage if it doesn't exist -->
+        <record id="crm_stage_email_reengaged" model="crm.stage">
+            <field name="name">Email Re-engaged</field>
+            <field name="sequence">15</field> <!-- Adjust sequence as needed based on your CRM stages -->
+            <field name="fold">false</field>
+            <field name="requirements">Follow up promptly with this re-engaged lead!</field>
+        </record>
+    </data>
+</odoo>

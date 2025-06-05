@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Email Template 1 (Day 0) -->
+        <record id="email_template_nc_followup_1" model="mail.template">
+            <field name="name">CRM: NC Follow-up Email 1</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">We missed you, ${object.name} – Let's connect!</field>
+            <field name="email_from">${(object.company_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${object.email_from | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+                        Hi ${object.name},
+                        <br/><br/>
+                        We tried calling regarding your interest in <strong>${object.course_id.name or 'our courses'}</strong>. When's a good time for a quick chat?
+                        <br/><br/>
+                        👉 <a href="https://wa.link/njp64y">Book a Callback Now</a>
+                        <br/><br/>
+                        – Team Tiju's Academy
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- Email Template 2 (Day 2) -->
+        <record id="email_template_nc_followup_2" model="mail.template">
+            <field name="name">CRM: NC Follow-up Email 2</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">Still interested in ${object.course_id.name or 'our courses'}?</field>
+            <field name="email_from">${(object.company_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${object.email_from | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+                        Hey ${object.name},
+                        <br/><br/>
+                        Still exploring <strong>${object.course_id.name or 'our courses'}</strong>? We'd love to guide you.
+                        <br/><br/>
+                        📘 <a href="https://tijusacademy.com/oet-guide">Download Free Guide</a>
+                        <br/><br/>
+                        Let us know anytime!<br/>
+                        – Team Tiju's Academy
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- Email Template 3 (Day 4) -->
+        <record id="email_template_nc_followup_3" model="mail.template">
+            <field name="name">CRM: NC Follow-up Email 3</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">Let's make your prep easy</field>
+            <field name="email_from">${(object.company_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${object.email_from | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+                        Reminder: We're here to help you crack <strong>${object.course_id.name or 'your exam'}</strong>!
+                        <br/><br/>
+                        📱 Call or WhatsApp us: 9539259910<br/>
+                        💬 <a href="https://wa.link/njp64y">Chat with us</a>
+                        <br/><br/>
+                        We're just a ping away!<br/>
+                        – Team Tiju's Academy
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- Email Template 4 (Day 6) -->
+        <record id="email_template_nc_followup_4" model="mail.template">
+            <field name="name">CRM: NC Follow-up Email 4</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">Last message – Ready when you are</field>
+            <field name="email_from">${(object.company_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${object.email_from | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+                        We won't email again unless we hear back.
+                        <br/><br/>
+                        Just reply to this email if you'd like help with <strong>${object.course_id.name or 'your preparation'}</strong>.
+                        <br/><br/>
+                        Thanks & good luck!<br/>
+                        – Team Tiju's Academy
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

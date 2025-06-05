@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Adding NC follow-up fields to CRM Lead form view -->
+    <record id="crm_lead_view_form_nc_followup" model="ir.ui.view">
+        <field name="name">crm.lead.form.nc.followup</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="NC Follow-up" name="nc_followup"
+                      attrs="{'invisible': [('stage_id.name', '!=', 'Not Connected (NC)')]}">
+                    <group>
+                        <group string="Not Connected Status">
+                            <field name="x_nc_stage_date" readonly="1"/>
+                            <field name="x_moved_to_cold" readonly="1"/>
+                        </group>
+                        <group string="Email Status">
+                            <field name="x_nc_email_1_sent" readonly="1"/>
+                            <field name="x_nc_email_2_sent" readonly="1"/>
+                            <field name="x_nc_email_3_sent" readonly="1"/>
+                            <field name="x_nc_email_4_sent" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

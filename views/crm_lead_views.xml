@@ -25,12 +25,11 @@
         </field>
     </record>
 
-    <!-- Action to set NC Stage Date for existing leads -->
+    <!-- Action to set NC Stage Date for existing leads (not visible in UI but can be called programmatically if needed) -->
     <record id="action_set_nc_stage_date_today" model="ir.actions.server">
         <field name="name">Set NC Stage Date to Today</field>
         <field name="model_id" ref="crm.model_crm_lead"/>
-        <field name="binding_model_id" ref="crm.model_crm_lead"/>
-        <field name="binding_view_types">list</field>
+        <!-- Removed binding_model_id to hide from UI -->
         <field name="state">code</field>
         <field name="code">action = model.action_set_nc_stage_date_today()</field>
     </record>

@@ -56,8 +56,11 @@ class CrmLead(models.Model):
         if not cold_stage:
             _logger.error("'Cold Lead' stage not found")
             return
-            
+        
         today = fields.Date.today()
+        
+        # Initialize NC Stage Date for leads that don't have it set
+        self._initialize_nc_stage_date(nc_stage)
         
         # Process leads in NC stage with a stored NC stage date
         nc_leads = self.search([
@@ -140,3 +143,79 @@ class CrmLead(models.Model):
         if nc_stage and lead.stage_id.id == nc_stage.id and not lead.x_nc_stage_date:
             _logger.info(f"Lead {lead.id} entered NC stage, setting date")
             lead.write({'x_nc_stage_date': fields.Date.today()})
+
+    @api.model
+    def _initialize_nc_stage_date(self, nc_stage=None):
+        """
+        Initialize NC Stage Date for existing leads in NC stage that don't have it set.
+        This is useful for leads that were in the NC stage before module installation.
+        
+        :param nc_stage: The NC stage record, if already known
+        """
+        if not nc_stage:
+            nc_stage = self.env['crm.stage'].search([('name', '=', 'Not Connected (NC)')], limit=1)
+            if not nc_stage:
+                _logger.error("'Not Connected (NC)' stage not found")
+                return
+        
+        # Find leads in NC stage without NC Stage Date
+        leads_without_date = self.search([
+            ('stage_id', '=', nc_stage.id),
+            ('x_nc_stage_date', '=', False)
+        ])
+        
+        if leads_without_date:
+            current_date = fields.Date.today()
+            _logger.info(f"Setting NC Stage Date to {current_date} for {len(leads_without_date)} leads")
+            
+            # Set current date as NC Stage Date for these leads
+            for lead in leads_without_date:
+                lead.write({'x_nc_stage_date': current_date})
+
+    @api.model
+    def action_set_nc_stage_date_today(self):
+        """
+        Action to set the NC Stage Date to today for all leads in 'Not Connected (NC)' stage 
+        that don't have an NC Stage Date.
+        This can be called manually through the UI to handle existing leads.
+        """
+        nc_stage = self.env['crm.stage'].search([('name', '=', 'Not Connected (NC)')], limit=1)
+        if not nc_stage:
+            _logger.error("'Not Connected (NC)' stage not found")
+            return {'type': 'ir.actions.act_window_close'}
+            
+        # Find leads in NC stage without NC Stage Date
+        leads_without_date = self.search([
+            ('stage_id', '=', nc_stage.id),
+            ('x_nc_stage_date', '=', False)
+        ])
+        
+        if leads_without_date:
+            today = fields.Date.today()
+            count = len(leads_without_date)
+            _logger.info(f"Setting NC Stage Date to {today} for {count} leads")
+            
+            # Set today as NC Stage Date for these leads
+            leads_without_date.write({'x_nc_stage_date': today})
+            
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'NC Stage Date Set',
+                    'message': f'Set NC Stage Date to today for {count} leads',
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'No Leads Updated',
+                    'message': 'No leads in NC stage found without an NC Stage Date',
+                    'type': 'info',
+                    'sticky': False,
+                }
+            }

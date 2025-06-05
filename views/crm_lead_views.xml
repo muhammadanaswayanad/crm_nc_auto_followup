@@ -7,8 +7,7 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="NC Follow-up" name="nc_followup"
-                      attrs="{'invisible': [('stage_id.name', '!=', 'Not Connected (NC)')]}">
+                <page string="NC Follow-up" name="nc_followup" invisible="stage_id.name != 'Not Connected (NC)'">
                     <group>
                         <group string="Not Connected Status">
                             <field name="x_nc_stage_date" readonly="1"/>

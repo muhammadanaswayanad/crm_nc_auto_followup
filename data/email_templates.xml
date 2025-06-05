@@ -88,7 +88,7 @@
                         <br/><br/>
                         Just reply to this email if you'd like help with <strong>${object.course_id.name or 'your preparation'}</strong>.
                         <br/><br/>
-                        Thanks & good luck!<br/>
+                        Thanks &amp; good luck!<br/>
                         – Team Tiju's Academy
                     </p>
                 </div>

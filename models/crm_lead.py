@@ -219,3 +219,34 @@ class CrmLead(models.Model):
                     'sticky': False,
                 }
             }
+
+    @api.model
+    def _process_cold_leads(self):
+        """
+        Process cold leads that were previously in NC stage.
+        This method can be extended to implement additional handling for cold leads.
+        Currently, it just logs the cold leads and provides a hook for future functionality.
+        
+        Possible future enhancements:
+        1. Periodic (e.g., monthly) re-engagement emails
+        2. Assignment to a specific salesperson for final review
+        3. Archiving leads after a certain period
+        4. Moving to a marketing automation campaign for nurturing
+        5. Generating reports on conversion rates from NC to customers
+        """
+        cold_stage = self.env['crm.stage'].search([('name', '=', 'Cold Lead')], limit=1)
+        if not cold_stage:
+            _logger.error("'Cold Lead' stage not found")
+            return
+            
+        # Find leads that were moved from NC to Cold
+        cold_leads = self.search([
+            ('stage_id', '=', cold_stage.id),
+            ('x_moved_to_cold', '=', True)
+        ])
+        
+        _logger.info(f"Found {len(cold_leads)} cold leads that were previously in NC stage")
+        
+        # Placeholder for future cold lead processing
+        # Currently no additional actions are taken with cold leads
+        return cold_leads
